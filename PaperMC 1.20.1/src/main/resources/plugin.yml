@@ -1,0 +1,23 @@
+name: OpenSit
+version: '${project.version}'
+main: illa4257.opensit.OpenSit
+api-version: '1.20'
+author: illa4257
+website: https://github.com/illa4257/OpenSit
+
+commands:
+  sit:
+    description: Sit
+    usage: /<command>
+    permission: OpenSit.Sit
+
+permissions:
+  OpenSit.*:
+    default: true
+    children:
+      OpenSit.Sit: true
+      OpenSit.SitClick: true
+  OpenSit.Sit:
+    default: true
+  OpenSit.SitClick:
+    default: true
