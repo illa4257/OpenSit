@@ -4,5 +4,5 @@
 - Sit down by clicking on stairs and slabs (permission: `OpenSit.SitClick`).
 ### Permissions:
 - `OpenSit.*` (default)
-- - `OpenSit.Sit`
-- - `OpenSit.SitClick`
+  - `OpenSit.Sit`
+  - `OpenSit.SitClick`
