@@ -6,8 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="OpenSit" />
+        <module name="opensit" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="OpenSit" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
