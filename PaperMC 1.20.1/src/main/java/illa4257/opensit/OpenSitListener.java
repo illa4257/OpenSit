@@ -20,13 +20,14 @@ public class OpenSitListener implements Listener {
         if (!(event.getEntity() instanceof Player))
             return;
         final Entity e = event.getDismounted();
-        if (e instanceof BlockDisplay && e.getScoreboardTags().contains("sit")) {
-            event.getEntity().teleport(event.getEntity().getLocation().add(0, 1, 0));
-            e.remove();
-        } else if (e instanceof BlockDisplay && e.getScoreboardTags().contains("sit2")) {
-            event.getEntity().teleport(event.getEntity().getLocation().add(0, 1.5, 0));
-            e.remove();
-        }
+        if (e instanceof BlockDisplay)
+            if (e.getScoreboardTags().contains("sit")) {
+                event.getEntity().teleport(event.getEntity().getLocation().add(0, 1, 0));
+                e.remove();
+            } else if (e.getScoreboardTags().contains("sit2")) {
+                event.getEntity().teleport(event.getEntity().getLocation().add(0, 1.5, 0));
+                e.remove();
+            }
     }
 
     @EventHandler
@@ -35,10 +36,9 @@ public class OpenSitListener implements Listener {
             return;
         final BlockData d = event.getClickedBlock().getState().getBlockData();
         if (d instanceof Slab || d instanceof Stairs) {
-            final boolean t = d instanceof Slab ? ((Slab) d).getType() == Slab.Type.TOP : ((Stairs) d).getHalf() == Bisected.Half.TOP;
+            final boolean t = d instanceof Slab ? ((Slab) d).getType() != Slab.Type.BOTTOM : ((Stairs) d).getHalf() == Bisected.Half.TOP;
             final Location l = event.getClickedBlock().getLocation();
-            final BlockDisplay b = (BlockDisplay) l.getWorld().spawnEntity(new Location(l.getWorld(), l.getX() + .5, l.getY() + (t ? .8 : .3),
-            l.getZ() + .5), EntityType.BLOCK_DISPLAY);
+            final BlockDisplay b = (BlockDisplay) l.getWorld().spawnEntity(new Location(l.getWorld(), l.getX() + .5, l.getY() + (t ? .8 : .3), l.getZ() + .5), EntityType.BLOCK_DISPLAY);
             b.addScoreboardTag(d instanceof Slab || t ? "sit" : "sit2");
             b.addPassenger(event.getPlayer());
         }
@@ -47,8 +47,8 @@ public class OpenSitListener implements Listener {
     @EventHandler
     public void onPlayerJoin(final PlayerJoinEvent event) {
         final Entity e = event.getPlayer().getVehicle();
-        if (e instanceof BlockDisplay && (e.getScoreboardTags().contains("sit") || e.getScoreboardTags().contains("sit2")) &&!e.getLocation().getBlock().isSolid())
-                e.remove();
+        if (e instanceof BlockDisplay && (e.getScoreboardTags().contains("sit") || e.getScoreboardTags().contains("sit2")) && !e.getLocation().getBlock().isSolid())
+            e.remove();
     }
 
     @EventHandler
