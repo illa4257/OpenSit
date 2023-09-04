@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.spigotmc.event.entity.EntityDismountEvent;
 
 public class OpenSitListener implements Listener {
@@ -41,6 +42,13 @@ public class OpenSitListener implements Listener {
             b.addScoreboardTag(d instanceof Slab || t ? "sit" : "sit2");
             b.addPassenger(event.getPlayer());
         }
+    }
+
+    @EventHandler
+    public void onPlayerJoin(final PlayerJoinEvent event) {
+        final Entity e = event.getPlayer().getVehicle();
+        if (e instanceof BlockDisplay && (e.getScoreboardTags().contains("sit") || e.getScoreboardTags().contains("sit2")) &&!e.getLocation().getBlock().isSolid())
+                e.remove();
     }
 
     @EventHandler
