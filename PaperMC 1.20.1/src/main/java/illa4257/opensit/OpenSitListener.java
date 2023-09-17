@@ -79,5 +79,17 @@ public class OpenSitListener implements Listener {
         }
     }
 
+    @EventHandler
+    public void onExplodeBlock(final BlockExplodeEvent event) {
+        for (final Block b : event.blockList())
+            removeSitsInBlock(b.getLocation());
+    }
+
+    @EventHandler
+    public void onExplodeBlock(final EntityExplodeEvent event) {
+        for (final Block b : event.blockList())
+            removeSitsInBlock(b.getLocation());
+    }
+
     @EventHandler public void onBreakBlock(final BlockBreakEvent event) { removeSitsInBlock(event.getBlock().getLocation()); }
 }
