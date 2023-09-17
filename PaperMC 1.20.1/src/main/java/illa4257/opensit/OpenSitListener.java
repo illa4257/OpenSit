@@ -91,5 +91,81 @@ public class OpenSitListener implements Listener {
             removeSitsInBlock(b.getLocation());
     }
 
+    @EventHandler
+    public void onPistonRetract(final BlockPistonRetractEvent event) {
+        final Vector d = event.getDirection().getDirection();
+        final ArrayList<Entity> dl = new ArrayList<>();
+        for (final Block b : event.getBlocks()) {
+            final Location l = b.getLocation();
+            final double sy = l.getBlockY() - .1, ey = l.getBlockY() + 1;
+            final int sx = l.getBlockX(), sz = l.getBlockZ(), ex = sx + 1, ez = sz + 1;
+            for (final Entity e : l.getChunk().getEntities())
+                if (e instanceof BlockDisplay && (e.getScoreboardTags().contains("sit") || e.getScoreboardTags().contains("sit2")) && !dl.contains(e)) {
+                    final Location l2 = e.getLocation();
+                    if (
+                            l2.getY() > sy && l2.getY() <= ey &&
+                            l2.getX() >= sx && l2.getX() <= ex &&
+                            l2.getZ() >= sz && l2.getZ() <= ez
+                    ) {
+                        // Move isn't working during the event
+                        dl.add(e);
+                        final Block b2 = l.clone().add(d.getX(), d.getY() + 1, d.getZ()).getBlock();
+                        if (b2.isSolid() && !(b.getState().getBlockData() instanceof TrapDoor))
+                            e.remove();
+                        else {
+                            final List<Entity> lp = e.getPassengers();
+                            if (!lp.isEmpty()) {
+                                final BlockDisplay r = (BlockDisplay) l.getWorld().spawnEntity(l2.add(d), EntityType.BLOCK_DISPLAY);
+                                for (final String s : e.getScoreboardTags())
+                                    r.addScoreboardTag(s);
+                                for (final Entity p : lp)
+                                    r.addPassenger(p);
+                                dl.add(r);
+                            }
+                        }
+                    }
+                }
+        }
+    }
+
+    @EventHandler
+    public void onPistonExtend(final BlockPistonExtendEvent event) {
+        final Vector d = event.getDirection().getDirection();
+        final ArrayList<Entity> dl = new ArrayList<>();
+        for (final Block b : event.getBlocks()) {
+            final Location l = b.getLocation();
+            if (!(b.getState().getBlockData() instanceof TrapDoor))
+                removeSitsInBlock(l.clone().subtract(0, 1, 0));
+            final double sy = l.getBlockY() - .1, ey = l.getBlockY() + 1;
+            final int sx = l.getBlockX(), sz = l.getBlockZ(), ex = sx + 1, ez = sz + 1;
+            for (final Entity e : l.getChunk().getEntities())
+                if (e instanceof BlockDisplay && (e.getScoreboardTags().contains("sit") || e.getScoreboardTags().contains("sit2")) && !dl.contains(e)) {
+                    final Location l2 = e.getLocation();
+                    if (
+                            l2.getY() > sy && l2.getY() <= ey &&
+                            l2.getX() >= sx && l2.getX() <= ex &&
+                            l2.getZ() >= sz && l2.getZ() <= ez
+                    ) {
+                        // Move isn't working during the event
+                        dl.add(e);
+                        final Block b2 = l.clone().add(d.getX(), d.getY() + 1, d.getZ()).getBlock();
+                        if (b2.isSolid() && !(b.getState().getBlockData() instanceof TrapDoor))
+                            e.remove();
+                        else {
+                            final List<Entity> lp = e.getPassengers();
+                            if (!lp.isEmpty()) {
+                                final BlockDisplay r = (BlockDisplay) l.getWorld().spawnEntity(l2.add(d), EntityType.BLOCK_DISPLAY);
+                                for (final String s : e.getScoreboardTags())
+                                    r.addScoreboardTag(s);
+                                for (final Entity p : lp)
+                                    r.addPassenger(p);
+                                dl.add(r);
+                            }
+                        }
+                    }
+                }
+        }
+    }
+
     @EventHandler public void onBreakBlock(final BlockBreakEvent event) { removeSitsInBlock(event.getBlock().getLocation()); }
 }
