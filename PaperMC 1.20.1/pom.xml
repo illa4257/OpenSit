@@ -6,7 +6,7 @@
 
     <groupId>illa4257</groupId>
     <artifactId>opensit</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <packaging>jar</packaging>
 
     <name>OpenSit</name>
