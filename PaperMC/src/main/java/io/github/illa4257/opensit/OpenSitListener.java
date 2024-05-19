@@ -131,7 +131,9 @@ public final class OpenSitListener implements Listener {
         if (e instanceof BlockDisplay && (e.getScoreboardTags().contains("sit") || e.getScoreboardTags().contains("sit2"))) {
             final Location l = new Location(e.getWorld(), e.getLocation().getX(), e.getLocation().getY() + .2, e.getLocation().getZ());
             final Block b = l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY() + 1, l.getBlockZ());
-            if (!l.getBlock().isSolid() || (b.isSolid() && !(b.getState().getBlockData() instanceof TrapDoor)))
+            if (
+                    (!l.getBlock().isSolid() && !l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY(), l.getBlockZ()).isSolid()) ||
+                            (b.isSolid() && !(b.getState().getBlockData() instanceof TrapDoor)))
                 e.remove();
         }
     }
