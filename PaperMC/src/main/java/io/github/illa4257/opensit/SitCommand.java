@@ -12,6 +12,10 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 public final class SitCommand implements CommandExecutor {
+    public final double offset;
+
+    public SitCommand(final OpenSitListener listener) { offset = listener.offset - .2; }
+
     @Override
     public boolean onCommand(final @NotNull CommandSender sender, final @NotNull Command command, final @NotNull String s, final @NotNull String[] strings) {
         if(!(sender instanceof Player)) {
@@ -37,7 +41,7 @@ public final class SitCommand implements CommandExecutor {
             sender.sendMessage("You do not stand on the ground.");
             return true;
         }
-        final BlockDisplay b = (BlockDisplay) l.getWorld().spawnEntity(new Location(l.getWorld(), l.getX(), r.getHitPosition().getY() - .2, l.getZ()), EntityType.BLOCK_DISPLAY);
+        final BlockDisplay b = (BlockDisplay) l.getWorld().spawnEntity(new Location(l.getWorld(), l.getX(), r.getHitPosition().getY() + offset, l.getZ()), EntityType.BLOCK_DISPLAY);
         b.addScoreboardTag("sit");
         b.addPassenger(plr);
         return true;

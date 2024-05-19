@@ -4,12 +4,17 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class OpenSit extends JavaPlugin {
-    public final OpenSitListener listener = new OpenSitListener();
+    public final OpenSitListener listener = new OpenSitListener(this);
 
     @Override
     public void onEnable() {
+        if (listener.dismountEvent == null) {
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
         listener.register(this);
-        getCommand("sit").setExecutor(new SitCommand());
+        getCommand("sit").setExecutor(new SitCommand(listener));
     }
 
     @Override

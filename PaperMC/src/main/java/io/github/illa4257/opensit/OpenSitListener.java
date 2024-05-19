@@ -39,34 +39,41 @@ public final class OpenSitListener implements Listener {
             }
     }
 
+    public final Class<Event> dismountEvent;
+    public final double offset, offsetHalf, offsetFull;
+
     @SuppressWarnings("unchecked")
+    public OpenSitListener(final OpenSit plugin) {
+        Class<Event> cl = null;
+        double o = 0;
+        try {
+            cl = (Class<Event>) Class.forName("org.bukkit.event.entity.EntityDismountEvent");
+            o = 0.2;
+        } catch (final Exception ex) {
+            try {
+                plugin.getLogger().info("Old server, I will use another event.");
+                cl = (Class<Event>) Class.forName("org.spigotmc.event.entity.EntityDismountEvent");
+            } catch (final Exception ex1) {
+                plugin.getLogger().warning(ex.toString());
+            }
+        }
+        dismountEvent = cl;
+        offset = o;
+        offsetHalf = offset + .3;
+        offsetFull = offsetHalf + .5;
+    }
+
     public void register(final OpenSit plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
 
-        final Class<Event> c;
         final Method md, me;
         {
-            Class<Event> cl = null;
-
-            try {
-                cl = (Class<Event>) Class.forName("org.bukkit.event.entity.EntityDismountEvent");
-            } catch (final Exception ex) {
-                try {
-                    plugin.getLogger().info("Old server, I will use another event.");
-                    cl = (Class<Event>) Class.forName("org.spigotmc.event.entity.EntityDismountEvent");
-                } catch (final Exception ex1) {
-                    plugin.getLogger().warning(ex.toString());
-                }
-            }
-
-            c = cl;
-
             Method d = null, e = null;
 
-            if (c != null)
+            if (dismountEvent != null)
                 try {
-                    d = c.getMethod("getDismounted");
-                    e = c.getMethod("getEntity");
+                    d = dismountEvent.getMethod("getDismounted");
+                    e = dismountEvent.getMethod("getEntity");
                 } catch (final Exception ex) {
                     plugin.getLogger().warning(ex.toString());
                 }
@@ -75,10 +82,10 @@ public final class OpenSitListener implements Listener {
             me = e;
         }
 
-        plugin.getServer().getPluginManager().registerEvent(c, this, EventPriority.LOWEST, (listener, event) -> {
+        plugin.getServer().getPluginManager().registerEvent(dismountEvent, this, EventPriority.LOWEST, (listener, event) -> {
             if (listener != this)
                 return;
-            if (!c.isInstance(event))
+            if (!dismountEvent.isInstance(event))
                 return;
             try {
                 final Entity d = (Entity) md.invoke(event);
@@ -103,7 +110,6 @@ public final class OpenSitListener implements Listener {
     @EventHandler
     public void onInteract(final PlayerInteractEvent event) {
         final Block b = event.getClickedBlock();
-        System.out.println(b);
         if (event.getItem() != null || b == null || event.getAction().isLeftClick() || !event.getPlayer().hasPermission("OpenSit.SitClick"))
             return;
         final Location l = b.getLocation();
@@ -113,7 +119,7 @@ public final class OpenSitListener implements Listener {
         final BlockData d = b.getState().getBlockData();
         if (d instanceof Slab || d instanceof Stairs) {
             final boolean t = d instanceof Slab ? ((Slab) d).getType() != Slab.Type.BOTTOM : ((Stairs) d).getHalf() == Bisected.Half.TOP;
-            final BlockDisplay r = (BlockDisplay) l.getWorld().spawnEntity(new Location(l.getWorld(), l.getX() + .5, l.getY() + (t ? .8 : .3), l.getZ() + .5), EntityType.BLOCK_DISPLAY);
+            final BlockDisplay r = (BlockDisplay) l.getWorld().spawnEntity(new Location(l.getWorld(), l.getX() + .5, l.getY() + (t ? offsetFull : offsetHalf), l.getZ() + .5), EntityType.BLOCK_DISPLAY);
             r.addScoreboardTag(d instanceof Slab || t ? "sit" : "sit2");
             r.addPassenger(event.getPlayer());
         }
