@@ -1,4 +1,4 @@
-package illa4257.opensit;
+package io.github.illa4257.opensit;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -7,20 +7,24 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.block.data.type.Stairs;
 import org.bukkit.block.data.type.TrapDoor;
-import org.bukkit.entity.*;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.*;
+import org.bukkit.entity.BlockDisplay;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.event.*;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.util.Vector;
-import org.spigotmc.event.entity.EntityDismountEvent;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OpenSitListener implements Listener {
+public final class OpenSitListener implements Listener {
     public static void removeSitsInBlock(final Location l) {
         final double sy = l.getBlockY() - .1, ey = l.getBlockY() + 1;
         final int sx = l.getBlockX(), sz = l.getBlockZ(), ex = sx + 1, ez = sz + 1;
@@ -35,24 +39,71 @@ public class OpenSitListener implements Listener {
             }
     }
 
-    @EventHandler
-    public void onDismount(final EntityDismountEvent event) {
-        final Entity e = event.getDismounted();
-        if (e instanceof BlockDisplay) {
-            if (e.getScoreboardTags().contains("sit"))
-                event.getEntity().teleport(event.getEntity().getLocation().add(0, 1, 0));
-            else if (e.getScoreboardTags().contains("sit2"))
-                event.getEntity().teleport(event.getEntity().getLocation().add(0, 1.5, 0));
-            else
-                return;
-            if (e.getPassengers().isEmpty())
-                e.remove();
+    @SuppressWarnings("unchecked")
+    public void register(final OpenSit plugin) {
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+
+        final Class<Event> c;
+        final Method md, me;
+        {
+            Class<Event> cl = null;
+
+            try {
+                cl = (Class<Event>) Class.forName("org.bukkit.event.entity.EntityDismountEvent");
+            } catch (final Exception ex) {
+                try {
+                    plugin.getLogger().info("Old server, I will use another event.");
+                    cl = (Class<Event>) Class.forName("org.spigotmc.event.entity.EntityDismountEvent");
+                } catch (final Exception ex1) {
+                    plugin.getLogger().warning(ex.toString());
+                }
+            }
+
+            c = cl;
+
+            Method d = null, e = null;
+
+            if (c != null)
+                try {
+                    d = c.getMethod("getDismounted");
+                    e = c.getMethod("getEntity");
+                } catch (final Exception ex) {
+                    plugin.getLogger().warning(ex.toString());
+                }
+
+            md = d;
+            me = e;
         }
+
+        plugin.getServer().getPluginManager().registerEvent(c, this, EventPriority.LOWEST, (listener, event) -> {
+            if (listener != this)
+                return;
+            if (!c.isInstance(event))
+                return;
+            try {
+                final Entity d = (Entity) md.invoke(event);
+                final Entity e = (Entity) me.invoke(event);
+
+                if (d instanceof BlockDisplay) {
+                    if (d.getScoreboardTags().contains("sit"))
+                        e.teleport(e.getLocation().add(0, 1, 0));
+                    else if (d.getScoreboardTags().contains("sit2"))
+                        e.teleport(e.getLocation().add(0, 1.5, 0));
+                    else
+                        return;
+                    if (d.getPassengers().isEmpty())
+                        d.remove();
+                }
+            } catch (final Exception ex) {
+                plugin.getLogger().warning(ex.toString());
+            }
+        }, plugin, true);
     }
 
     @EventHandler
     public void onInteract(final PlayerInteractEvent event) {
         final Block b = event.getClickedBlock();
+        System.out.println(b);
         if (event.getItem() != null || b == null || event.getAction().isLeftClick() || !event.getPlayer().hasPermission("OpenSit.SitClick"))
             return;
         final Location l = b.getLocation();
@@ -104,8 +155,8 @@ public class OpenSitListener implements Listener {
                     final Location l2 = e.getLocation();
                     if (
                             l2.getY() > sy && l2.getY() <= ey &&
-                            l2.getX() >= sx && l2.getX() <= ex &&
-                            l2.getZ() >= sz && l2.getZ() <= ez
+                                    l2.getX() >= sx && l2.getX() <= ex &&
+                                    l2.getZ() >= sz && l2.getZ() <= ez
                     ) {
                         // Move isn't working during the event
                         dl.add(e);
@@ -143,8 +194,8 @@ public class OpenSitListener implements Listener {
                     final Location l2 = e.getLocation();
                     if (
                             l2.getY() > sy && l2.getY() <= ey &&
-                            l2.getX() >= sx && l2.getX() <= ex &&
-                            l2.getZ() >= sz && l2.getZ() <= ez
+                                    l2.getX() >= sx && l2.getX() <= ex &&
+                                    l2.getZ() >= sz && l2.getZ() <= ez
                     ) {
                         // Move isn't working during the event
                         dl.add(e);
@@ -167,5 +218,6 @@ public class OpenSitListener implements Listener {
         }
     }
 
-    @EventHandler public void onBreakBlock(final BlockBreakEvent event) { removeSitsInBlock(event.getBlock().getLocation()); }
+    @EventHandler
+    public void onBreakBlock(final BlockBreakEvent event) { removeSitsInBlock(event.getBlock().getLocation()); }
 }

@@ -1,4 +1,4 @@
-package illa4257.opensit;
+package io.github.illa4257.opensit;
 
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -11,7 +11,7 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-public class SitCommand implements CommandExecutor {
+public final class SitCommand implements CommandExecutor {
     @Override
     public boolean onCommand(final @NotNull CommandSender sender, final @NotNull Command command, final @NotNull String s, final @NotNull String[] strings) {
         if(!(sender instanceof Player)) {

@@ -9,8 +9,5 @@
         <module name="opensit" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="OpenSit" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>

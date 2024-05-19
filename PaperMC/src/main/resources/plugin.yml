@@ -1,8 +1,10 @@
 name: OpenSit
 version: '${project.version}'
-main: illa4257.opensit.OpenSit
+main: io.github.illa4257.opensit.OpenSit
 api-version: '1.20'
-author: illa4257
+load: STARTUP
+authors: [ illa4257 ]
+description: Plugin for sitting.
 website: https://github.com/illa4257/OpenSit
 
 commands:
