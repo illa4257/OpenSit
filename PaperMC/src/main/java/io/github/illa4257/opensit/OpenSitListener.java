@@ -25,6 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class OpenSitListener implements Listener {
+    public static boolean isSit(final Entity e) {
+        return e instanceof BlockDisplay && (e.getScoreboardTags().contains("sit") || e.getScoreboardTags().contains("sit2"));
+    }
+
     public interface RunnableBlockArg {
         void run(final Entity entity);
     }
@@ -33,7 +37,7 @@ public final class OpenSitListener implements Listener {
         final double sy = l.getBlockY() - .1, ey = l.getBlockY() + 1;
         final int sx = l.getBlockX(), sz = l.getBlockZ(), ex = sx + 1, ez = sz + 1;
         for (final Entity e : l.getChunk().getEntities())
-            if (e instanceof BlockDisplay && (e.getScoreboardTags().contains("sit") || e.getScoreboardTags().contains("sit2"))) {
+            if (isSit(e)) {
                 final Location l2 = e.getLocation();
                 if (
                         l2.getY() > sy && l2.getY() <= ey &&
@@ -47,7 +51,7 @@ public final class OpenSitListener implements Listener {
         final double sy = l.getBlockY() - .1, ey = l.getBlockY() + 1;
         final int sx = l.getBlockX(), sz = l.getBlockZ(), ex = sx + 1, ez = sz + 1;
         for (final Entity e : l.getChunk().getEntities())
-            if (e instanceof BlockDisplay && (e.getScoreboardTags().contains("sit") || e.getScoreboardTags().contains("sit2"))) {
+            if (isSit(e)) {
                 final Location l2 = e.getLocation();
                 if (
                         l2.getY() > sy && l2.getY() <= ey &&
@@ -146,7 +150,7 @@ public final class OpenSitListener implements Listener {
     @EventHandler
     public void onPlayerJoin(final PlayerJoinEvent event) {
         final Entity e = event.getPlayer().getVehicle();
-        if (e instanceof BlockDisplay && (e.getScoreboardTags().contains("sit") || e.getScoreboardTags().contains("sit2"))) {
+        if (isSit(e)) {
             final Location l = new Location(e.getWorld(), e.getLocation().getX(), e.getLocation().getY() + .2, e.getLocation().getZ());
             final Block b = l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY() + 1, l.getBlockZ());
             if (
