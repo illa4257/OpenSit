@@ -120,7 +120,8 @@ public final class OpenSitListener implements Listener {
                         e.teleport(e.getLocation().add(0, 1.5, 0));
                     else
                         return;
-                    if (d.getPassengers().isEmpty())
+                    final int s = d.getPassengers().size();
+                    if ((s == 1 && d.getPassengers().contains(e)) || s == 0)
                         d.remove();
                 }
             } catch (final Exception ex) {
