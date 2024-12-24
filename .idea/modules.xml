@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/PaperMC/opensit.iml" filepath="$PROJECT_DIR$/PaperMC/opensit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PaperMC/OpenSit.iml" filepath="$PROJECT_DIR$/PaperMC/OpenSit.iml" />
     </modules>
   </component>
 </project>
