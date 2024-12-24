@@ -1,5 +1,6 @@
 package io.github.illa4257.opensit;
 
+import org.bukkit.command.PluginCommand;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -14,7 +15,9 @@ public final class OpenSit extends JavaPlugin {
         }
 
         listener.register(this);
-        getCommand("sit").setExecutor(new SitCommand(listener));
+        final PluginCommand sitCommand = getCommand("sit");
+        if (sitCommand != null)
+            sitCommand.setExecutor(new SitCommand(listener));
     }
 
     @Override
