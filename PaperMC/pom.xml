@@ -6,14 +6,14 @@
 
     <groupId>io.github.illa4257</groupId>
     <artifactId>OpenSit</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <packaging>jar</packaging>
 
     <name>OpenSit</name>
 
     <description>Plugin for sitting.</description>
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <url>https://github.com/illa4257/OpenSit</url>
