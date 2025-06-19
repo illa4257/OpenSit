@@ -8,8 +8,9 @@ Plugin for sitting.
 - Command `/sit` for sit (permission: `OpenSit.Sit`).
 - Sit down by clicking on stairs and slabs (permission: `OpenSit.SitClick`).
 - After the block is destroyed, the player sitting on it will stand up.
-- Uses a display block instead of armor stands, allowing a player sitting on blocks and slabs to rotate without body issues.
+- Uses a display block instead of armor stands, allowing a player sitting on blocks and slabs to rotate with less body issues.
 - The plugin does not delete the seat entity when the server goes down. This ensures that if players who were sitting come back after a server restart, they will continue to sit.
+- Pistons can move sitting players.<br>![Slab Seating in Motion](opensit-piston-preview.webp)
 
 ### Permissions
 - `OpenSit.*` (allowed by default)
