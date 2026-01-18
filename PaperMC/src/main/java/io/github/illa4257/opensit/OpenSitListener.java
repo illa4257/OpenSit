@@ -133,7 +133,9 @@ public final class OpenSitListener implements Listener {
     @EventHandler
     public void onInteract(final PlayerInteractEvent event) {
         final Block b = event.getClickedBlock();
-        if (event.getItem() != null || b == null || event.getAction().isLeftClick() || !event.getPlayer().hasPermission("OpenSit.SitClick"))
+        if (!event.getPlayer().getInventory().getItemInMainHand().getType().isAir() ||
+            !event.getPlayer().getInventory().getItemInOffHand().getType().isAir() ||
+                b == null || event.getAction().isLeftClick() || !event.getPlayer().hasPermission("OpenSit.SitClick"))
             return;
         final Location l = b.getLocation();
         final Block b2 = b.getWorld().getBlockAt(l.getBlockX(), l.getBlockY() + 1, l.getBlockZ());
